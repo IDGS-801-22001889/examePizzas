@@ -1,0 +1,170 @@
+{% extends "layout.html" %}
+
+{% block container %}
+{% import "_macros.html" as macros %}
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<h1 class="font-display text-3xl text-red-700 mb-8">Nuevo Pedido</h1>
+
+<div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-8 mb-6">
+
+    <form action="{{ url_for('pedidos.agregar') }}" method="post">  
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <div>
+                <p class="text-sm font-medium text-stone-500 mb-3">Tamaño Pizza</p>
+                <div class="space-y-2">
+                    {% for pizza in pizzas %}
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="tamano" value="{{ pizza.tamano }}" required class="accent-red-600">
+                        <span class="text-sm text-stone-700">
+                            {{ pizza.tamano }} — ${{ pizza.precio }}
+                        </span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div>
+                <p class="text-sm font-medium text-stone-500 mb-3">Ingredientes (+$10 c/u)</p>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="ingredientes" value="Jamón" class="accent-red-600">
+                        <span class="text-sm text-stone-700">Jamón $10</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="ingredientes" value="Piña" class="accent-red-600">
+                        <span class="text-sm text-stone-700">Piña $10</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="ingredientes" value="Champiñones" class="accent-red-600">
+                        <span class="text-sm text-stone-700">Champiñones $10</span>
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-sm font-medium text-stone-500 mb-3">Núm. de Pizzas</p>
+                <input type="number" name="cantidad" min="1" value="1" required class="block w-full text-sm text-stone-800 border border-stone-300
+                       rounded-lg px-3 py-2 focus:outline-none focus:border-red-600 mb-4">
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-medium
+                        text-sm px-6 py-2.5 rounded-lg transition">
+                    + Agregar
+                </button>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+        <div class="bg-red-50 border-b border-red-100 px-6 py-4">
+            <h2 class="font-display text-lg text-red-700">Detalle del Pedido</h2>
+        </div>
+        <table class="w-full text-sm text-left">
+            <thead class="bg-stone-50 border-b border-stone-200 text-stone-500 text-xs uppercase">
+                <tr>
+                    <th class="px-4 py-3">Tamaño</th>
+                    <th class="px-4 py-3">Ingredientes</th>
+                    <th class="px-4 py-3">Cant.</th>
+                    <th class="px-4 py-3">Subtotal</th>
+                    <th class="px-4 py-3"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in carrito %}
+                <tr class="border-b border-stone-100 hover:bg-red-50/40 transition">
+                    <td class="px-4 py-3 font-medium">{{ item.tamano }}</td>
+                    <td class="px-4 py-3 text-stone-500">{{ item.ingredientes }}</td>
+                    <td class="px-4 py-3">{{ item.cantidad }}</td>
+                    <td class="px-4 py-3 font-medium text-red-700">${{ item.subtotal }}</td>
+                    <td class="px-4 py-3">
+                        <a href="{{ url_for('pedidos.quitar', id=item.id) }}"
+                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs transition">
+                            Quitar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not carrito %}
+                <tr>
+                    <td colspan="5" class="px-4 py-6 text-center text-stone-400 text-sm">
+                        No hay pizzas agregadas
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <div class="px-6 py-4 border-t border-stone-100">
+            <form action="{{ url_for('pedidos.terminar') }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="grid grid-cols-1 gap-4 mb-4">
+                    {{ macros.campoNuevo(form.nombre, class='block py-2.5 px-0 w-full text-sm text-stone-800
+                    bg-transparent border-0 border-b-2 border-stone-300 appearance-none focus:outline-none
+                    focus:ring-0 focus:border-red-600 peer') }}
+
+                    {{ macros.campoNuevo(form.direccion, class='block py-2.5 px-0 w-full text-sm text-stone-800
+                    bg-transparent border-0 border-b-2 border-stone-300 appearance-none focus:outline-none
+                    focus:ring-0 focus:border-red-600 peer') }}
+
+                    {{ macros.campoNuevo(form.telefono, class='block py-2.5 px-0 w-full text-sm text-stone-800
+                    bg-transparent border-0 border-b-2 border-stone-300 appearance-none focus:outline-none
+                    focus:ring-0 focus:border-red-600 peer') }}
+
+                    {{ macros.campoNuevo(form.fecha, class='block py-2.5 px-0 w-full text-sm text-stone-800
+                    bg-transparent border-0 border-b-2 border-stone-300 appearance-none focus:outline-none
+                    focus:ring-0 focus:border-red-600 peer') }}
+                </div>
+
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium
+                        text-sm px-6 py-2.5 rounded-lg transition">
+                    ✅ Terminar Pedido
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+        <div class="bg-yellow-50 border-b border-yellow-100 px-6 py-4">
+            <h2 class="font-display text-lg text-yellow-700">Ventas del Día</h2>
+        </div>
+        <div class="p-6 space-y-3">
+            {% for ped in ventas_hoy %}
+            <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+                <span class="text-stone-700 font-medium">{{ ped.cliente.nombre }}</span>
+                <span class="text-red-600 font-bold">${{ ped.total }}</span>
+            </div>
+            {% endfor %}
+            {% if not ventas_hoy %}
+            <p class="text-stone-400 text-sm text-center py-4">Sin ventas hoy</p>
+            {% endif %}
+        </div>
+        {% if ventas_hoy %}
+        <div class="px-6 py-4 border-t border-stone-100 bg-yellow-50">
+            <div class="flex justify-between items-center">
+                <span class="font-display text-yellow-700">Total del día</span>
+                <span class="font-bold text-xl text-yellow-700">
+                    ${{ ventas_hoy | sum(attribute='total') }}
+                </span>
+            </div>
+        </div>
+        {% endif %}
+        <div class="px-6 pb-6">
+            <a href="{{ url_for('reportes.reporte') }}" class="block text-center bg-yellow-500 hover:bg-yellow-600 text-white
+                   font-medium text-sm px-6 py-2.5 rounded-lg transition mt-4">
+                Ver Ventas Totales por Día
+            </a>    
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

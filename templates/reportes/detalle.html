@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block container %}
+<h1 class="font-display text-3xl text-red-700 mb-2">Detalle del Pedido</h1>
+<p class="text-stone-500 text-sm mb-8">Pedido #{{ pedido.id_pedido }} — {{ pedido.fecha.strftime('%d/%m/%Y') }}</p>
+
+<div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 mb-6">
+    <h2 class="font-display text-lg text-stone-700 mb-4">Datos del Cliente</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+        <div>
+            <p class="text-stone-400">Nombre</p>
+            <p class="font-medium text-stone-800">{{ pedido.cliente.nombre }}</p>
+        </div>
+        <div>
+            <p class="text-stone-400">Dirección</p>
+            <p class="font-medium text-stone-800">{{ pedido.cliente.direccion }}</p>
+        </div>
+        <div>
+            <p class="text-stone-400">Teléfono</p>
+            <p class="font-medium text-stone-800">{{ pedido.cliente.telefono }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden mb-6">
+    <div class="bg-red-50 border-b border-red-100 px-6 py-4">
+        <h2 class="font-display text-lg text-red-700">Pizzas del Pedido</h2>
+    </div>
+    <table class="w-full text-sm text-left">
+        <thead class="bg-stone-50 border-b border-stone-200 text-stone-500 text-xs uppercase">
+            <tr>
+                <th class="px-4 py-3">Tamaño</th>
+                <th class="px-4 py-3">Ingredientes</th>
+                <th class="px-4 py-3">Cantidad</th>
+                <th class="px-4 py-3">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in detalles %}
+            <tr class="border-b border-stone-100">
+                <td class="px-4 py-3 font-medium">{{ d.pizza.tamano }}</td>
+                <td class="px-4 py-3 text-stone-500">{{ d.ingredientes or 'Sin ingredientes' }}</td>
+                <td class="px-4 py-3">{{ d.cantidad }}</td>
+                <td class="px-4 py-3 font-medium text-red-700">${{ d.subtotal }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="px-6 py-4 border-t border-stone-100 bg-red-50 flex justify-between font-bold">
+        <span class="font-display text-red-700">Total</span>
+        <span class="text-xl text-red-700">${{ pedido.total }}</span>
+    </div>
+</div>
+
+<a href="{{ url_for('reportes.reporte') }}"
+   class="inline-block bg-stone-200 hover:bg-stone-300 text-stone-700 text-sm px-5 py-2 rounded-lg transition">
+    ← Volver a Reportes
+</a>
+{% endblock %}

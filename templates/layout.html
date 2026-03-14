@@ -1,0 +1,63 @@
+    <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PizzaApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'DM Sans', sans-serif; background-color: #fdf6ec; }
+        .font-display { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="min-h-screen text-stone-800">
+
+    <nav class="bg-red-700 shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+
+            <a href="{{ url_for('index') }}"
+               class="font-display text-2xl text-yellow-300 hover:text-yellow-200 transition flex items-center gap-2">
+                🍕 PizzaApp
+            </a>
+
+            <div class="flex gap-8 text-sm font-medium">
+                <a href="{{ url_for('pedidos.pedido') }}"
+                   class="text-red-100 hover:text-yellow-300 transition">
+                    📋 Pedidos
+                </a>
+                <a href="{{ url_for('reportes.reporte') }}"
+                   class="text-red-100 hover:text-yellow-300 transition">
+                    📊 Reportes
+                </a>
+            </div>
+
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 pt-6">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 px-4 py-3 rounded-lg text-sm font-medium border
+                        {% if category == 'success' %} bg-green-50 border-green-400 text-green-800
+                        {% elif category == 'warning' %} bg-red-50 border-red-400 text-red-800
+                        {% else %} bg-yellow-50 border-yellow-400 text-yellow-800
+                        {% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        {% block container %}{% endblock %}
+    </main>
+
+    <footer class="bg-red-700 text-red-200 text-center text-xs py-4 mt-16">
+        🍕 PizzaApp © 2025 — Desarrollado con Flask + SQLAlchemy
+    </footer>
+
+</body>
+</html>
